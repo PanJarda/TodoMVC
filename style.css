@@ -1,0 +1,15 @@
+.completed {
+	text-decoration: line-through;
+}
+
+.todo-list>li>input:last-child {
+	display: none;
+}
+
+.todo-list>li.edit *{
+	display: none;
+}
+
+.todo-list>li.edit>input:last-child {
+	display: block;
+}
