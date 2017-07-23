@@ -27,6 +27,10 @@ class Tag
 	removeClass(className) {
 		this.tag.classList.remove(className)
 	}
+
+	on(event, callback) {
+		this.tag.addEventListener(event, callback)
+	}
 }
 
 class Div extends Tag
