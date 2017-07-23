@@ -1,6 +1,12 @@
 function main(body) {
-	var todo = new Todo()
-	var task = new Task('ahoj')
-	task.render(body, body.firstChild)
-	task.rename('fsfs')
+	var div      = new Div({class: 'ahoj'})
+	var button   = new Button(' X ')
+	var checkbox = new CheckBox()
+	var label    = new Label('Ahoj')
+
+	div.append(checkbox)
+	   .append(label)
+	   .append(button)
+
+	body.appendChild(div.tag)
 }
