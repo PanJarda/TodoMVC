@@ -1,0 +1,6 @@
+class TodoModel
+{
+	constructor() {
+		
+	}
+}

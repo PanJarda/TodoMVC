@@ -1,3 +1,7 @@
+function newTextNode(text) {
+	return document.createTextNode(text)
+}
+
 class Tag
 {
 	constructor(tag, text, attr) {
@@ -16,8 +20,20 @@ class Tag
 	}
 
 	append(child) {
-		this.tag.appendChild(child.tag)
+		if (child instanceof Tag)
+			this.tag.appendChild(child.tag)
+		else
+			this.tag.appendChild(child)
 		return this
+	}
+
+	mount(parent, before) {
+		parent.insertBefore(this.tag, before)
+		return this
+	}
+
+	umount() {
+		this.tag.parentNode.removeChild(this.tag)
 	}
 
 	addClass(className) {
@@ -29,7 +45,8 @@ class Tag
 	}
 
 	on(event, callback) {
-		this.tag.addEventListener(event, callback)
+		this.tag.addEventListener(event, callback.bind(this))
+		return this
 	}
 }
 
@@ -68,6 +85,13 @@ class Label extends Tag
 	}
 }
 
+class Input extends Tag
+{
+	constructor(attr) {
+		super('input', attr)
+	}
+}
+
 class CheckBox extends Tag
 {
 	constructor(attr) {
@@ -78,3 +102,53 @@ class CheckBox extends Tag
 		super('input', attr)
 	}
 }
+
+class Section extends Tag
+{
+	constructor(text, attr) {
+		super('section', text, attr)
+	}
+}
+
+class H1 extends Tag
+{
+	constructor(text, attr) {
+		super('h1', text, attr)
+	}
+}
+
+class H2 extends Tag
+{
+	constructor(text, attr) {
+		super('h2', text, attr)
+	}
+}
+
+class H3 extends Tag
+{
+	constructor(text, attr) {
+		super('h3', text, attr)
+	}
+}
+
+class H4 extends Tag
+{
+	constructor(text, attr) {
+		super('h4', text, attr)
+	}
+}
+
+class H5 extends Tag
+{
+	constructor(text, attr) {
+		super('h5', text, attr)
+	}
+}
+
+class H6 extends Tag
+{
+	constructor(text, attr) {
+		super('h6', text, attr)
+	}
+}
+

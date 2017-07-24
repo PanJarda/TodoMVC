@@ -13,3 +13,7 @@
 .todo-list>li.edit>input:last-child {
 	display: block;
 }
+
+.hidden {
+	display: none;
+}

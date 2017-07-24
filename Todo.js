@@ -5,11 +5,11 @@ class TodoModel
 		this.filter = 'all'
 	}
 
-	addTask(task) {
-		this.tasks.push(task)
+	addTask(name) {
+		this.tasks.push(name)
 	}
 
-	removeTask(task) {
+	removeTask(name) {
 		this.tasks.splice(this.tasks.indexOf(task), 1)
 	}
 }
@@ -33,7 +33,7 @@ class TodoView
 	}
 }
 
-class Todo
+class TodoController
 {
 	constructor() {
 		this.view  = new TodoView()
@@ -41,9 +41,6 @@ class Todo
 	}
 
 	addTask(task) {
-		var task = new Task({
-			taskName: e.value
-		})
 		this.model.addTask(task)
 		this.view.addTask(task)
 	}
