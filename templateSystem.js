@@ -1,17 +1,17 @@
-var checkbox = new CheckBox()
+function h(tagName, attributes, ...args) {
+	let children = args.length ? [].concat(...args) : null
+	return { tagName, attributes, children }
+}
 
-var input    = new Input({
-	type:  'text',
-	value: 'ahoj',
-	class: 'ahoj'
-})
+function render(vnode) {
+	
+}
 
-var button   = new Button(' X ')
-var ul       = new Ul({class: 'ahoj'})
-var label    = new Label()
-var div      = new Div({id: 'ahoj', class: 'fsfsf'})
+var ahoj = h('div', {id: 'ahoj'},
+				h('ul', {},
+					h('li', {}, 'ahoj'),
+					h('li', {}, 'jak'),
+					h('li', {}, 'se'),
+					h('li', {}, 'mas?')))
 
-ul.append(
-	li.append(checkbox)
-	  .append(label)
-	  .append(button))
+console.log(ahoj)
