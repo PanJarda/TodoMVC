@@ -1,63 +1,47 @@
-function h(tagName, attributes, events, ...args) {
-	let children = args.length ? [].concat(...args) : null
-	if (tagName == 'text')
-		return {tagName: 'text', value: children[0]}
-	return { tagName, attributes, events, children }
+
+'use strict'
+
+function h(tagName, ...args) {
+	var res = {tagName}
+
+	if (!args.length)
+		return res
+	
+	if (args[0] instanceof Object && !args[0].tagName)
+			res.props = args.shift()
+
+	if (args.length)
+		res.children = [].concat(...args)
+
+	return res
 }
 
 function render(vnode) {
-	if (vnode.tagName == 'text')
-		return vnode.DOMNode = document.createTextNode(vnode.value)
+	var DOMNode = document.createElement(vnode.tagName)
 
-	let node = document.createElement(vnode.tagName)
+	if (vnode.props) {
+		let prop
+		for (prop in vnode.props) {
+			if (prop.startsWith('on'))
+				DOMNode.addEventListener(prop.substring(2), vnode.props[prop])
+			else
+				DOMNode.setAttribute(prop, vnode.props[prop])
+		}
+	}
 
-	let a = vnode.attributes
-	let e = vnode.events
+	if (!vnode.children)
+		return DOMNode
 
-	for (k in a)
-		node.setAttribute(k, a[k])
+	if (vnode.children.length && typeof vnode.children[0] === 'string')
+		DOMNode.innerText = vnode.children[0]
+	else
+		vnode.children.forEach(c => DOMNode.appendChild(render(c)))
 
-	for (k in e)
-		node.addEventListener(k, e[k])
-
-	vnode.children.forEach(c => node.appendChild(render(c)))
-
-	return vnode.DOMNode = node
+	return DOMNode
 }
 
-function diff(oldNode, newNode) {
-	if (oldNode.tagName != newNode.tagName) {
-		oldNode.DOMNode.parentNode.replaceChild(render(newNode), oldNode.DOMNode)
-		return newNode
-	}
-
-	if (oldNode.tagName == 'text') {
-		if (oldNode.value != newNode.value){
-			oldNode.value = newNode.value
-			oldNode.DOMNode.nodeValue = oldNode.value
-			return oldNode
-		} else {
-			return oldNode
-		}
-	}
-
-	var l0 = oldNode.children.length
-	var l1 = newNode.children.length
-
-	if (!l0 && !l1)
-		return oldNode
-
-	if (l0 == l1) {
-		for (var i = 0; i < l0; i++) {
-			if (oldNode.children[i] != diff(oldNode.children[i], newNode.children[i])) {
-				oldNode.children[i] = newNode.children[i]
-			}
-		}
-		return oldNode
-	} else {
-		oldNode.DOMNode.parentNode.replaceChild(render(newNode), oldNode.DOMNode)
-		return newNode
-	}
+function diff(dom, vnode) {
+	
 }
 
 class Component

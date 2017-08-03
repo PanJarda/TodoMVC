@@ -11,8 +11,10 @@ class Square extends Component {
 	}
 
 	render() {
-		return h('button', {class: 'square'}, {mousedown: this.handleClick.bind(this)}, [
-					h('text', {}, {}, this.state.value.toString())])
+		return h('button', {
+								class: 'square',
+								onmousedown: this.handleClick.bind(this)
+							}, this.state.value.toString())
 	}
 }
 
@@ -52,13 +54,16 @@ class List extends Component
 	}
 
 	render() {
-		return h('div', {class: 'wrapper'}, {},
-				h('input', {placeholder: 'What are you gonna do?'}, {keydown: this.handleKeydown.bind(this)}, []),
-				h('ul', {}, {},
-					Object.keys(this.state.values).map(k => h('li', {}, {},
-													h('input', {type: 'checkbox', key: k}, {change: this.handleToggle.bind(this)}, []),
-													h('label', {}, {}, h('text', {}, {}, this.state.values[k])),
-													h('button', {key: k}, {mousedown: this.handleClick.bind(this)}, h('text', {}, {}, 'X'))))))
+		return h('div', {class: 'wrapper'},
+				h('input', {
+						placeholder: 'What are you gonna do?',
+						onkeydown: this.handleKeydown.bind(this)
+					}),
+				h('ul',
+					Object.keys(this.state.values).map(k => h('li',
+													h('input', {type: 'checkbox', key: k, onchange: this.handleToggle.bind(this)}),
+													h('label', this.state.values[k]),
+													h('button', {key: k, onmousedown: this.handleClick.bind(this)}, 'X')))))
 	}
 }
 
@@ -68,4 +73,3 @@ function main(body) {
 	button.mount(body)
 	list.mount(body)
 }
-
