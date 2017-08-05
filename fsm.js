@@ -14,23 +14,22 @@ class Text {
 }
 
 class Tag {
-  constructor(name, init = '') {
+  constructor(name, init = new Text('')) {
     this.value = init
     this.dom = document.createElement(name)
-    this.dom.innerText = init
+    this.dom.appendChild(init.dom)
   }
   set(value) {
-    this.vlaue = value
-    this.dom.innerText = value
+    this.value.set(value)
   }
   get() {
-    return this.value
+    return this.value.get()
   }
 }
 
 function tag(tag) {
   return function(value) {
-    return new Tag(tag, value)
+    return new Tag(tag, new Text(value))
   }
 }
 
@@ -49,6 +48,9 @@ class List {
   pop() {
     let last = this.value.pop()
     this.dom.removeChild(last.dom)
+  }
+  mod(index, val) {
+    this.value[index].set(val)
   }
   get() {
     return this.value.map(item => item.get())
