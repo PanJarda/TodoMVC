@@ -1,5 +1,5 @@
 
-class TextNode {
+class Text {
   constructor(init = '') {
     this.value = init
     this.dom = document.createTextNode(init)
@@ -13,15 +13,37 @@ class TextNode {
   }
 }
 
-class Fragment {
-  constructor(dom, init = []) {
+class Tag {
+  constructor(name, init = new Text('')) {
     this.value = init
-    this.dom = dom
-    init.forEach(item => dom.appendChild(item))
+    this.dom = document.createElement(name)
+    this.dom.appendChild(init.dom)
+  }
+  set(value) {
+    this.value.set(value)
+  }
+  get() {
+    return this.value.get()
+  }
+}
+
+function tag(tag) {
+  return function(value) {
+    return new Tag(tag, new Text(value))
+  }
+}
+
+class List {
+  constructor(tag, container, init) {
+    this.container = container
+    this.value = init.map(container)
+    this.dom = document.createElement(tag)
+    this.value.forEach(item => this.dom.appendChild(item.dom))
   }
   push(item) {
-    this.value.push(item)
-    this.dom.appendChild(item.dom)
+    var node = this.container(item)
+    this.value.push(node)
+    this.dom.appendChild(node.dom)
   }
   pop() {
     let last = this.value.pop()
@@ -30,13 +52,8 @@ class Fragment {
   mod(index, val) {
     this.value[index].set(val)
   }
-  remove(index) {
-    this.dom.removeChild(this.value[index])
-    this.value.splice(index, 1)
-  }
-  insertAt(index, item) {
-    this.value.splice(index, 0, item)
-    this.dom.insertBefore(item, this.value[index + 1])
+  get() {
+    return this.value.map(item => item.get())
   }
 }
 
