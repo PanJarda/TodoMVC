@@ -44,18 +44,18 @@ class List {
   push(item) {
     var node = this.container(item)
     this.value.push(node)
-    console.log(this.value)
     this.dom.appendChild(node.dom)
   }
   pop() {
     let last = this.value.pop()
     this.dom.removeChild(last.dom)
   }
+  get() {
+    return this.value.map(item => item.get())
+  }
 }
 
 function h(tag, attrs, ...children) {
-  if (typeof tag !== 'string')
-    return tag
   var dom = document.createElement(tag)
 
   for (attr1 in attrs) {
@@ -65,13 +65,19 @@ function h(tag, attrs, ...children) {
       dom.setAttribute(attr1, attrs[attr1])
   }
 
-  children.forEach(ch => dom.appendChild(ch))
+  if (typeof children[0] === 'string')
+    dom.innerText = children[0]
+  else 
+    children.forEach(ch => dom.appendChild(ch))
+
   return dom
 }
 
 var fragment = {
   value: new List('ul', tag('li'), [1,2,3]),
   render: function() {
-    return h('div', {}, this.value.dom)
+    return h('div', {},
+            h('button', {onmousedown: (e) => this.value.push('ahoj')}, 'push one item'),
+            this.value.dom)
   }
 }
