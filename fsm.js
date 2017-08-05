@@ -14,7 +14,7 @@ class Text {
 }
 
 class Tag {
-  constructor(name, init) {
+  constructor(name, init = '') {
     this.value = init
     this.dom = document.createElement(name)
     this.dom.innerText = init
@@ -55,6 +55,7 @@ class List {
   }
 }
 
+// hyperscript - it is standard for creating dom nodes
 function h(tag, attrs, ...children) {
   var dom = document.createElement(tag)
 
@@ -71,13 +72,4 @@ function h(tag, attrs, ...children) {
     children.forEach(ch => dom.appendChild(ch))
 
   return dom
-}
-
-var fragment = {
-  value: new List('ul', tag('li'), [1,2,3]),
-  render: function() {
-    return h('div', {},
-            h('button', {onmousedown: (e) => this.value.push('ahoj')}, 'push one item'),
-            this.value.dom)
-  }
 }

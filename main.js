@@ -1,7 +1,14 @@
+
 function main(body) {
-	body.appendChild(fragment.render())
-	fragment.value.push('ahoj')
-	console.log(fragment.value.get())
-	fragment.value.pop()
-	console.log(fragment.value.get())
+	
+	var componentA = {
+	  value: new List('ul', tag('li'), [1,2,3]),
+	  render: function() {
+	    return h('div', {},
+	            h('button', {onmousedown: (e) => this.value.push('ahoj')}, 'push one item'),
+	            this.value.dom)
+	  }
+	}
+
+	body.appendChild(componentA.render())
 }
