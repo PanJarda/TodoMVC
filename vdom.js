@@ -1,75 +1,59 @@
 
 'use strict'
 
-function h(tagName, ...args) {
-	var res = {tagName}
+function h(tag, ...args) {
+  var res = {tag}
 
-	if (!args.length)
-		return res
-	
-	if (args[0] instanceof Object && !args[0].tagName)
-			res.props = args.shift()
+  if (!args.length)
+    return res
+  
+  if (!Array.isArray(args[0]) && args[0] instanceof Object && !args[0].tag)
+      res.attrs = args.shift()
 
-	if (args.length)
-		res.children = [].concat(...args)
+  if (args.length)
+    res.children = [].concat(...args)
 
-	return res
+  return res
 }
 
 function render(vnode) {
-	var DOMNode = document.createElement(vnode.tagName)
+  var dom = document.createElement(vnode.tag)
+  vnode.dom = dom
 
-	if (vnode.props) {
-		let prop
-		for (prop in vnode.props) {
-			if (prop.startsWith('on'))
-				DOMNode.addEventListener(prop.substring(2), vnode.props[prop])
-			else
-				DOMNode.setAttribute(prop, vnode.props[prop])
-		}
-	}
+  if (vnode.attrs) {
+    let attr1
+    for (attr1 in vnode.attrs) {
+      if (attr1.startsWith('on'))
+        dom.addEventListener(attr1.substring(2), vnode.attrs[attr1])
+      else
+        dom.setAttribute(attr1, vnode.attrs[attr1])
+    }
+  }
 
-	if (!vnode.children)
-		return DOMNode
+  if (!vnode.children)
+    return vnode
 
-	if (vnode.children.length && typeof vnode.children[0] === 'string')
-		DOMNode.innerText = vnode.children[0]
-	else
-		vnode.children.forEach(c => DOMNode.appendChild(render(c)))
+  if (vnode.children.length && typeof vnode.children[0] === 'string')
+    dom.innerText = vnode.children[0]
+  else
+    vnode.children.forEach(c => dom.appendChild(render(c).dom))
 
-	return DOMNode
+  return vnode
 }
 
-function diff(dom, vnode) {
-	
-}
+function diff(a, b) {
+  if (a.tag != b.tag)
+    a.dom.parentNode.replaceChild(render(b).dom, a.dom)
 
-class Component
-{
-	constructor() {
-		this.state = {}
-		this.vdom = null
-		this.parent = null
-	}
+  b.dom = a.dom
 
-	setState(newState) {
-		this.state = newState
-		this.update()
-	}
+  var la = a.children.length
+  var lb = b.children.length
+  for (var i = 0; i < lb || i < la; i++) {
+    diff(a.children[i], b.children[i])
+  }
 
-	getState() {
-		return 	Object.assign({}, this.state)
-	}
+  b.dom.appendChild(frg)
 
-	mount(parent) {
-		this.vdom = this.render()
-		var node = render(this.vdom)
-		this.parent = parent
-		return parent.appendChild(node)
-	}
-
-	update() {
-		var vdom = this.render()
-		this.vdom = diff(this.vdom, vdom)
-	}
+  return b
 }

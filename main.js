@@ -55,15 +55,23 @@ class List extends Component
 
 	render() {
 		return h('div', {class: 'wrapper'},
-				h('input', {
-						placeholder: 'What are you gonna do?',
-						onkeydown: this.handleKeydown.bind(this)
-					}),
-				h('ul',
-					Object.keys(this.state.values).map(k => h('li',
-													h('input', {type: 'checkbox', key: k, onchange: this.handleToggle.bind(this)}),
-													h('label', this.state.values[k]),
-													h('button', {key: k, onmousedown: this.handleClick.bind(this)}, 'X')))))
+									h('input', {
+											placeholder: 'What are you gonna do?',
+											onkeydown: this.handleKeydown.bind(this)
+										}),
+									h('ul',
+										Object.keys(this.state.values).map(k =>
+																	h('li',
+																		h('input', {
+																			type: 'checkbox',
+																			key: k,
+																			onchange: this.handleToggle.bind(this)
+																		}),
+																		h('label', this.state.values[k]),
+																		h('button', {
+																			key: k,
+																			onmousedown: this.handleClick.bind(this)
+																		}, 'X')))))
 	}
 }
 
@@ -72,4 +80,8 @@ function main(body) {
 	var list = new List()
 	button.mount(body)
 	list.mount(body)
+
+	//fsm
+	body.appendChild(component.render())
+	body.appendChild(component2.render())
 }
