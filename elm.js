@@ -2,23 +2,34 @@
  * HELPERS
  *********************************************************/
 
+// for each object key apply callback
+function each(object, callback) {
+  Object.keys(object).forEach(callback)
+  return object
+}
+
 // create textNode
 function txtNode(txt) {
   return document.createTextNode(txt)
 }
 
+// set attributes of given node
 function setAttrs(node, attrs) {
-  Object.keys(attrs).forEach(a => node.setAttribute(a, attrs[a]))
+  each(attrs,
+    a => node.setAttribute(a, attrs[a]))
   return node
 }
 
+// add event listeners to given node
 function addEventListeners(node, events) {
-  Object.keys(events).forEach(e => dom.addEventListener(e, events[e]))
+  each(events,
+    e => node.addEventListener(e, events[e]))
   return node
 }
 
+// append children to given node
 function appendChildren(node, children) {
-  children.forEach(dom.appendChild)
+  children.forEach(ch => node.appendChild(ch))
   return node
 }
 
@@ -34,15 +45,19 @@ function domElement(type, props, events, children) {
 }
 
 // hyperscript - creates virtual dom tree
-function h(tag, props, ...children) {
-  return {tag, props, children}
+function h(tag, props, events, ...children) {
+  return {tag, props, events, children}
 }
 
 // vdom -> dom
-function vdom2dom({tag, props, events, children}) {
-    return typeof node === 'string' || typeof node = 'number' ?
-            txtNode(node) :
-            domElement(tag, props, events, children.map(vdom2dom))
+function vdom2dom(node) {
+  return typeof node === 'string' || typeof node === 'number' ?
+          txtNode(node) :
+          domElement(
+            node.tag,
+            node.props,
+            node.events,
+            node.children.map(vdom2dom))
 }
 
 /*********************************************************
@@ -55,16 +70,22 @@ const initState = {
 }
 
 function update(state, action) {
-  if (action.type == 'inc')
-    return Object.assign({}, state, {counter: state.counter + 1})
+  return action.type == 'inc'
+          ? Object.assign({}, state, {counter: state.counter + 1})
+          : state
 }
 
 function render(state, handler) {
-  return h('div', {}, 
-            h('button', {onmousedown: handler}, '+'),
-            h('div', {}, state.counter.toString()))
+  return h('div', {class: 'ahoj'}, {},
+            h('button', {}, {mousedown: handler}, '+'),
+            h('div', {}, {}, state.counter))
 }
 
 function main(dom) {
-  dom.appendChild(vdom2dom(render(initState), update.bind(null, {state: initState, action: {type: 'inc'}})))
+  dom.appendChild(
+    vdom2dom(
+      render(
+        initState,
+        ()=>console.log('ahoj'))))
 }
+
