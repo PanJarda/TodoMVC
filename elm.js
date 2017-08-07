@@ -40,8 +40,8 @@ function txtNode(txt) {
  * set attributes of given node
  */
 function setAttrs(node, attrs) {
-  each(attrs,
-    a => node.setAttribute(a, attrs[a]))
+  each(attrs, a =>
+    node.setAttribute(a, attrs[a]))
   return node
 }
 
@@ -49,8 +49,8 @@ function setAttrs(node, attrs) {
  * add event listeners to given node
  */
 function addEventListeners(node, events) {
-  each(events,
-    e => node.addEventListener(e, events[e]))
+  each(events, e =>
+    node.addEventListener(e, events[e]))
   return node
 }
 
@@ -58,7 +58,8 @@ function addEventListeners(node, events) {
  * append children to given node
  */
 function appendChildren(node, children) {
-  children.forEach(ch => node.appendChild(ch))
+  children.forEach(ch =>
+    node.appendChild(ch))
   return node
 }
 
