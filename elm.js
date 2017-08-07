@@ -2,39 +2,59 @@
  * HELPERS
  *********************************************************/
 
-// for each object key apply callback
+/* . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+ * Functional programming
+ */
+
+/*
+ * for each object key apply callback
+ */
 function each(object, callback) {
   Object.keys(object).forEach(callback)
   return object
 }
 
-// create textNode
+/* . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+ * DOM manipulation
+ */
+
+/*
+ * create textNode
+ */
 function txtNode(txt) {
   return document.createTextNode(txt)
 }
 
-// set attributes of given node
+/*
+ * set attributes of given node
+ */
 function setAttrs(node, attrs) {
   each(attrs,
     a => node.setAttribute(a, attrs[a]))
   return node
 }
 
-// add event listeners to given node
+/*
+ * add event listeners to given node
+ */
 function addEventListeners(node, events) {
   each(events,
     e => node.addEventListener(e, events[e]))
   return node
 }
 
-// append children to given node
+/*
+ * append children to given node
+ */
 function appendChildren(node, children) {
   children.forEach(ch => node.appendChild(ch))
   return node
 }
 
-// createElement
-function domElement(type, props, events, children) {
+/*
+ * create DOM node
+ */ 
+function domNode(type, props, events, children) {
   return appendChildren(
     addEventListeners(
       setAttrs(
@@ -44,16 +64,24 @@ function domElement(type, props, events, children) {
     children)
 }
 
-// hyperscript - creates virtual dom tree
+/* . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+ * Framework
+ */
+
+/*
+ * hyperscript - creates virtual dom tree
+ */
 function h(tag, props, events, ...children) {
   return {tag, props, events, children}
 }
 
-// vdom -> dom
+/*
+ * vdom -> dom
+ */
 function vdom2dom(node) {
   return typeof node === 'string' || typeof node === 'number' ?
           txtNode(node) :
-          domElement(
+          domNode(
             node.tag,
             node.props,
             node.events,
@@ -88,4 +116,3 @@ function main(dom) {
         initState,
         ()=>console.log('ahoj'))))
 }
-
