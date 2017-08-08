@@ -109,8 +109,8 @@ function buildDOM (vdom) {
 }
 
 /*
- *  diff
- *  traverses DOM and VDOM trees and
+ * diff 
+ * traverses DOM and VDOM trees and
  * returns array of actions needed to rebuild DOM
  * for example:
  * [{
