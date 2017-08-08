@@ -4,6 +4,7 @@
  # Readable Elm architecture proof-of-concept
  # in plain ES6 without using any libraries, frameworks
  # and transpilers.
+ # Main goals: simplicity & readability.
  # 
  ########################################################*/
 
@@ -20,7 +21,7 @@
 /*
  * for each object key apply callback
  */
-function each(object, callback) {
+function each (object, callback) {
   Object.keys(object).forEach(callback)
   return object
 }
@@ -32,14 +33,14 @@ function each(object, callback) {
 /*
  * create textNode
  */
-function txtNode(txt) {
+function newTextNode (txt) {
   return document.createTextNode(txt)
 }
 
 /*
  * set attributes of given node
  */
-function setAttrs(node, attrs) {
+function setAttrs (node, attrs) {
   each(attrs, a =>
     node.setAttribute(a, attrs[a]))
   return node
@@ -48,7 +49,7 @@ function setAttrs(node, attrs) {
 /*
  * add event listeners to given node
  */
-function addEventListeners(node, events) {
+function addEventListeners (node, events) {
   each(events, e =>
     node.addEventListener(e, events[e]))
   return node
@@ -57,16 +58,24 @@ function addEventListeners(node, events) {
 /*
  * append children to given node
  */
-function appendChildren(node, children) {
+function appendChildren (node, children) {
   children.forEach(ch =>
     node.appendChild(ch))
   return node
 }
 
 /*
+ * replaceChild wrapper
+ */
+function replaceChild (parent, oldNode, newNode) {
+  parent.replaceChild(newNode, oldNode)
+  return parent
+}
+
+/*
  * create DOM node
- */ 
-function domNode(type, props, events, children) {
+ */
+function newDOMNode (type, props, events, children) {
   return appendChildren(
     addEventListeners(
       setAttrs(
@@ -77,27 +86,72 @@ function domNode(type, props, events, children) {
 }
 
 /* . . . . . . . . . . . . . . . . . . . . . . . . . . . .
- * Framework
+ * Virtual DOM
  */
 
 /*
- * hyperscript - creates virtual dom tree
+ * hyperscript - creates virtual DOM tree
  */
-function h(tag, props, events, ...children) {
-  return {tag, props, events, children}
+function h (tag, props, events, ...children) {
+  return { tag, props, events, children }
 }
 
 /*
- * vdom -> dom
+ * VDOM -> DOM
  */
-function vdom2dom(node) {
+function vdom2dom (node) {
   return typeof node === 'string' || typeof node === 'number' ?
-          txtNode(node) :
-          domNode(
-            node.tag,
-            node.props,
-            node.events,
-            node.children.map(vdom2dom))
+          newTextNode(node) : newDOMNode(
+                                node.tag,
+                                node.props,
+                                node.events,
+                                node.children.map(vdom2dom))
+}
+
+/*
+ * diff two virtual DOM trees
+ * return array of actions needed to rebuild DOM
+ * for example:
+ * [{
+ *   node: <oldNode>,
+ *   action: 'replace',
+ *   param: { parent, newNode }
+ * },
+ * {
+ *   node: <oldNode>,
+ *   action: 'update',
+ *   param: { props, events }
+ * },
+ * {
+ *   node: <oldNode>,
+ *   action: 'remove'
+ *   param: <parentNode>
+ * }]
+ */
+function diff (oldNode, newNode) {
+
+}
+
+/*
+ * patches DOM - apply differences to DOM
+ */
+function patch (diff) {
+  diff.forEach(({ node, action, param }) => {
+    action === 'replace' ?
+      replaceChild(
+        param.parent,
+        node,
+        param.newNode) :
+    action === 'update' ?
+      updateParam(
+        node,
+        param.props,
+        param.events) :
+    action === 'remove' ?
+      removeChild(
+        param.parent,
+        node) : false
+  })
 }
 
 /*********************************************************
@@ -109,19 +163,19 @@ const initState = {
   counter: 0
 }
 
-function update(state, action) {
+function update (state, action) {
   return action.type == 'inc'
-          ? Object.assign({}, state, {counter: state.counter + 1})
+          ? Object.assign({}, state, { counter: state.counter + 1 })
           : state
 }
 
-function render(state, handler) {
-  return h('div', {class: 'ahoj'}, {},
-            h('button', {}, {mousedown: handler}, '+'),
+function render (state, handler) {
+  return h('div', { class: 'ahoj' }, {},
+            h('button', {}, { mousedown: handler }, '+'),
             h('div', {}, {}, state.counter))
 }
 
-function main(dom) {
+function main (dom) {
   dom.appendChild(
     vdom2dom(
       render(
