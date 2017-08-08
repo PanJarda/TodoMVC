@@ -99,18 +99,19 @@ function h (tag, props, events, ...children) {
 /*
  * VDOM -> DOM
  */
-function vdom2dom (node) {
-  return typeof node === 'string' || typeof node === 'number' ?
-          newTextNode(node) : newDOMNode(
-                                node.tag,
-                                node.props,
-                                node.events,
-                                node.children.map(vdom2dom))
+function buildDOM (vdom) {
+  return typeof vdom === 'string' || typeof vdom === 'number' ?
+          newTextNode(vdom) : newDOMNode(
+                                vdom.tag,
+                                vdom.props,
+                                vdom.events,
+                                vdom.children.map(buildDOM))
 }
 
 /*
- * diff two virtual DOM trees
- * return array of actions needed to rebuild DOM
+ *  diff
+ *  traverses DOM and VDOM trees and
+ * returns array of actions needed to rebuild DOM
  * for example:
  * [{
  *   node: <oldNode>,
@@ -128,7 +129,7 @@ function vdom2dom (node) {
  *   param: <parentNode>
  * }]
  */
-function diff (oldNode, newNode) {
+function diff (dom, vdom) {
 
 }
 
@@ -177,7 +178,7 @@ function render (state, handler) {
 
 function main (dom) {
   dom.appendChild(
-    vdom2dom(
+    buildDOM(
       render(
         initState,
         ()=>console.log('ahoj'))))
